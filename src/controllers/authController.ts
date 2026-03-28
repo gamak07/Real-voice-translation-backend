@@ -213,3 +213,30 @@ export const verifyEmailController = async (
     });
   }
 };
+
+
+// o auth
+
+export const oauthCallbackController = (req: Request, res: Response): void => {
+  try {
+    const user = req.user as any;
+
+    if (!user) {
+      res.redirect(`${process.env.CLIENT_URL}/login?error=OAuth authentication failed`);
+      return;
+    }
+
+    // Generate tokens
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    // Set HttpOnly cookies
+    setAuthCookies(res, accessToken, refreshToken);
+
+    // Redirect to frontend dashboard
+    res.redirect(`${process.env.CLIENT_URL}`);
+  } catch (error) {
+    console.error("OAuth callback error:", error);
+    res.redirect(`${process.env.CLIENT_URL}/login?error=Something went wrong`);
+  }
+};

@@ -4,6 +4,7 @@ import cors from "cors";
 import { connectDB, disconnectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import cookieParser from "cookie-parser";
+import passport from "./config/passport";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
 
 app.use("/auth", authRoutes);
 
